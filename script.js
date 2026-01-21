@@ -252,6 +252,12 @@ const achievements = {
         name: '😤 Annoying Player',
         description: 'Keep bothering the manager',
         unlocked: false
+    },
+    crownCollector: {
+        id: 'crownCollector',
+        name: '👑 Crown Collector',
+        description: 'Show respect to the founder',
+        unlocked: false
     }
 };
 
@@ -377,7 +383,7 @@ function createAchievementCounter() {
         transition: all 0.3s;
         box-shadow: 0 5px 20px rgba(255, 70, 85, 0.3);
     `;
-    counter.innerHTML = '🏆 0/5';
+    counter.innerHTML = '🏆 0/7';
     counter.addEventListener('mouseenter', () => {
         counter.style.transform = 'scale(1.1)';
         counter.style.boxShadow = '0 8px 30px rgba(255, 70, 85, 0.5)';
@@ -684,6 +690,251 @@ function triggerFireExplosion() {
     // Console message
     console.log('%c🔥🔥🔥 FIRE MASTER UNLOCKED! 🔥🔥🔥', 'color: #ff4655; font-size: 20px; font-weight: bold;');
     console.log('%cPromo Code: FIREPOWER', 'color: #ff8c00; font-size: 16px;');
+}
+
+// Achievement: Crown Collector - Click Owner card 15 times
+let ownerClickCount = 0;
+let ownerClickTimer = null;
+
+// Wait for DOM to load before attaching event
+setTimeout(() => {
+    const ownerCard = document.querySelector('.team-card');
+    if (ownerCard && ownerCard.querySelector('.team-name')?.textContent === 'vonrosie') {
+        ownerCard.style.cursor = 'pointer';
+        ownerCard.style.transition = 'transform 0.3s ease';
+        
+        ownerCard.addEventListener('click', () => {
+            ownerClickCount++;
+            
+            // Visual feedback
+            ownerCard.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                ownerCard.style.transform = 'scale(1)';
+            }, 100);
+            
+            clearTimeout(ownerClickTimer);
+            ownerClickTimer = setTimeout(() => {
+                ownerClickCount = 0;
+            }, 3000);
+            
+            // Show progress hints
+            if (ownerClickCount === 5) {
+                showQuickMessage('👑 Keep going...', '#FFD700');
+            } else if (ownerClickCount === 10) {
+                showQuickMessage('👑 Almost there!', '#FFD700');
+            } else if (ownerClickCount === 15) {
+                triggerCrownCollector();
+                unlockAchievement('crownCollector');
+                ownerClickCount = 0;
+            }
+        });
+    }
+}, 1000);
+
+function showQuickMessage(text, color) {
+    const msg = document.createElement('div');
+    msg.textContent = text;
+    msg.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: ${color};
+        font-family: 'Orbitron', sans-serif;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-shadow: 0 0 20px ${color};
+        z-index: 9999;
+        pointer-events: none;
+        animation: quick-fade 1s ease-out forwards;
+    `;
+    document.body.appendChild(msg);
+    
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes quick-fade {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+            30% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    setTimeout(() => msg.remove(), 1000);
+}
+
+function triggerCrownCollector() {
+    // Create royal overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, rgba(0, 0, 0, 0.8) 100%);
+        z-index: 10000;
+        pointer-events: none;
+    `;
+    document.body.appendChild(overlay);
+    
+    // Spawn floating crowns
+    for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+            const crown = document.createElement('div');
+            crown.textContent = '👑';
+            const startX = Math.random() * 100;
+            const endX = startX + (Math.random() - 0.5) * 40;
+            const rotation = Math.random() * 720 - 360;
+            const duration = Math.random() * 2 + 2;
+            
+            crown.style.cssText = `
+                position: fixed;
+                left: ${startX}%;
+                bottom: -50px;
+                font-size: ${Math.random() * 40 + 30}px;
+                z-index: 10001;
+                pointer-events: none;
+                animation: crown-float ${duration}s ease-out forwards;
+            `;
+            
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes crown-float {
+                    0% {
+                        transform: translateY(0) rotate(0deg);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translateY(-${window.innerHeight + 100}px) translateX(${endX - startX}vw) rotate(${rotation}deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+            
+            document.body.appendChild(crown);
+            setTimeout(() => crown.remove(), duration * 1000);
+        }, i * 50);
+    }
+    
+    // Golden flash effect
+    const flash = document.createElement('div');
+    flash.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: #FFD700;
+        z-index: 10002;
+        pointer-events: none;
+        animation: golden-flash 0.5s ease-out;
+    `;
+    document.body.appendChild(flash);
+    
+    const flashStyle = document.createElement('style');
+    flashStyle.textContent = `
+        @keyframes golden-flash {
+            0% { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+    `;
+    document.head.appendChild(flashStyle);
+    
+    setTimeout(() => flash.remove(), 500);
+    
+    // Royal message
+    const message = document.createElement('div');
+    message.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.95), rgba(255, 140, 0, 0.95));
+            border: 4px solid #FFD700;
+            border-radius: 25px;
+            padding: 3rem 4rem;
+            text-align: center;
+            z-index: 10003;
+            box-shadow: 0 0 80px rgba(255, 215, 0, 0.8), inset 0 0 40px rgba(255, 255, 255, 0.3);
+            animation: royal-entrance 0.6s ease-out;
+        ">
+            <div style="font-size: 5rem; margin-bottom: 1rem; animation: crown-spin 2s linear infinite;">👑</div>
+            <h2 style="
+                font-family: 'Orbitron', sans-serif;
+                color: #000;
+                font-size: 3rem;
+                margin-bottom: 1rem;
+                text-transform: uppercase;
+                text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
+            ">CROWN COLLECTOR!</h2>
+            <p style="
+                color: #1a1a1a;
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+                font-weight: 700;
+            ">You have honored the founder!</p>
+            <p style="
+                color: #000;
+                font-size: 1.2rem;
+                font-style: italic;
+            ">Long live vonrosie! 🎉</p>
+        </div>
+    `;
+    document.body.appendChild(message);
+    
+    const messageStyle = document.createElement('style');
+    messageStyle.textContent = `
+        @keyframes royal-entrance {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.3) rotate(-10deg);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(0deg);
+            }
+        }
+        @keyframes crown-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(messageStyle);
+    
+    // Play royal fanfare (browser beep sequence)
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6 (major chord)
+    
+    notes.forEach((freq, index) => {
+        setTimeout(() => {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = freq;
+            oscillator.type = 'triangle';
+            
+            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 0.5);
+        }, index * 150);
+    });
+    
+    // Cleanup
+    setTimeout(() => {
+        overlay.remove();
+        message.remove();
+    }, 5000);
+    
+    console.log('%c👑👑👑 CROWN COLLECTOR UNLOCKED! 👑👑👑', 'color: #FFD700; font-size: 24px; font-weight: bold;');
+    console.log('%cAll hail vonrosie!', 'color: #FFD700; font-size: 16px;');
 }
 
 // Achievement 2: Bullet Time - Click SHOOTZ title 7 times
