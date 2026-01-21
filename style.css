@@ -835,15 +835,15 @@ section {
 }
 
 .role-badge.senior-mod {
-    background: rgba(88, 101, 242, 0.2);
-    color: #5865F2;
-    border-color: #5865F2;
-}
-
-.role-badge.moderator {
     background: rgba(46, 213, 115, 0.2);
     color: #2ed573;
     border-color: #2ed573;
+}
+
+.role-badge.moderator {
+    background: rgba(88, 101, 242, 0.2);
+    color: #5865F2;
+    border-color: #5865F2;
 }
 
 .team-name {
