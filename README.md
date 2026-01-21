@@ -19,6 +19,8 @@ FireFlag Studios creates engaging games for the Roblox community. Our flagship g
 - **Discord Integration** - Join our community and support system
 - **Responsive Design** - Works on desktop, tablet, and mobile
 
+**Visit our website:** [https://bottybotban.github.io/fireflag-website](https://bottybotban.github.io/fireflag-website)
+
 ## 🔗 Links
 
 - **Play Shootz:** [Roblox Game](https://www.roblox.com/games/18655823417/Shootz)
@@ -54,3 +56,4 @@ Use code: **1000Likes** for cash and prisms in-game!
 
 © 2026 FireFlag Studios. All rights reserved.  
 Shootz is not affiliated with Roblox Corporation.
+
